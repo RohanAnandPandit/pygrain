@@ -6,7 +6,7 @@ def show_text(screen, text, centre_x, centre_y, font_colour=(0, 0, 0),
     # initialises font for displaying text
     try:
         for line in text.split('\n'):
-            basic_font = pygame.font.Font('pygrain/component/Vogue.ttf', font_size)
+            basic_font = pygame.font.Font('component/Vogue.ttf', font_size)
             text = basic_font.render(text, True, font_colour, font_bg)
             text_rect = text.get_rect()
             text_rect.center = (centre_x, centre_y)  #

@@ -21,13 +21,17 @@ class App:
         white = 255, 255, 255
         while True:
             self.screen.fill(white)
+
             self.check_events()
+
             if self.frame:
                 self.frame.draw(self.screen)
+
             pygame.display.update()
 
     def add_component(self, frame):
         self.frames.append(frame)
+        return self
 
     def check_events(self):
         events = pygame.event.get()
@@ -46,6 +50,8 @@ class App:
 
     def switch_frame(self, frame):
         self.frame = frame
+        return self
 
     def set_title(self, title):
         pygame.display.set_caption(title)
+        return self

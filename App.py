@@ -15,7 +15,6 @@ class App:
         self.width, self.height = width, height
         self.screen = pygame.display.set_mode((width, height))
         self.frame = frame
-        self.frames = []
 
     def mainloop(self):
         white = 255, 255, 255

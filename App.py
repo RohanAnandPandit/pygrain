@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import ctypes
+import threading
 
 pygame.init()
 
@@ -15,6 +16,7 @@ class App:
         self.width, self.height = width, height
         self.screen = pygame.display.set_mode((width, height))
         self.frame = frame
+        self.frames = []
 
     def mainloop(self):
         white = 255, 255, 255
@@ -49,6 +51,11 @@ class App:
 
     def switch_frame(self, frame):
         self.frame = frame
+        return self
+
+    def add_window(self, window):
+        window_thread = threading.Thread(target=window, args=tuple())
+        window_thread.start()
         return self
 
     def set_title(self, title):

@@ -1,9 +1,9 @@
-from .PygameComponent import PygameComponent
+from .Component import Component
 import pygame
 from .util import show_text
 
 
-class PygameButton(PygameComponent):
+class Button(Component):
     def __init__(self, parent, x=0, y=0, width=0, height=0, text="",
                  font_color=(0, 0, 0), bg_colour=(255, 255, 255),
                  border_color=(0, 0, 0), border_thickness=1, font_size=10):

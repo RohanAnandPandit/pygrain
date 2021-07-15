@@ -1,7 +1,7 @@
-from .PygameComponent import PygameComponent
+from .Component import Component
 
 
-class PygameFrame(PygameComponent):
+class Frame(Component):
     def __init__(self, parent):
         super().__init__(parent)
         self.components = []

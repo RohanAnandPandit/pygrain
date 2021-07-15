@@ -1,4 +1,4 @@
-class PygameComponent:
+class Component:
     def __init__(self, parent):
         self.parent = parent
         self.parent.add_component(self)

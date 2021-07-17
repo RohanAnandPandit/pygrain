@@ -10,6 +10,8 @@ ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (5, 60)
 
+WHITE = 255, 255, 255
+
 
 class App:
     def __init__(self, width=1000, height=800, frame=None):
@@ -19,16 +21,17 @@ class App:
         self.frames = []
 
     def mainloop(self):
-        white = 255, 255, 255
+        self.update()
         while True:
-            self.screen.fill(white)
-
             self.check_events()
 
-            if self.frame:
-                self.frame.draw(self.screen)
+    def update(self):
+        self.screen.fill(WHITE)
 
-            pygame.display.update()
+        if self.frame:
+            self.frame.draw(self.screen)
+
+        pygame.display.update()
 
     def add_component(self, frame):
         self.frames.append(frame)
@@ -53,8 +56,8 @@ class App:
         self.frame = frame
         return self
 
-    def add_window(self, window):
-        window_thread = threading.Thread(target=window, args=tuple())
+    def run(self, func):
+        window_thread = threading.Thread(target=func, args=tuple())
         window_thread.start()
         return self
 

@@ -4,7 +4,7 @@ from .util import show_text
 
 
 class Button(Component):
-    def __init__(self, parent, x=0, y=0, width=0, height=0, text="",
+    def __init__(self, parent, x=0, y=0, width=0, height=0, text=lambda: "",
                  font_color=(0, 0, 0), bg_colour=(255, 255, 255),
                  border_color=(0, 0, 0), border_thickness=1, font_size=10):
         super().__init__(parent)
@@ -40,7 +40,7 @@ class Button(Component):
                          (self.x, self.y, self.width, self.height),
                          width=self.border_thickness)
 
-        show_text(screen, self.text, self.x + self.width / 2, self.y + self.height / 2,
+        show_text(screen, self.text(), self.x + self.width / 2, self.y + self.height / 2,
                   font_size=self.font_size)
 
     def mouseover(self):
@@ -52,10 +52,10 @@ class Button(Component):
 
     def event(self, name):
         if name in self.actions and self.mouseover():
-            return self.actions[name]()
+            return self.actions[name](self)
 
     def set_text(self, text):
         self.text = text
 
     def get_text(self):
-        return self.text
+        return self.text()

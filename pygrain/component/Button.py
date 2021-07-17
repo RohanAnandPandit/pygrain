@@ -56,6 +56,7 @@ class Button(Component):
 
     def set_text(self, text):
         self.text = text
+        self.parent.update()
 
     def get_text(self):
         return self.text()

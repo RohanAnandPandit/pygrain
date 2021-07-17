@@ -17,3 +17,6 @@ class Frame(Component):
     def add_component(self, component):
         self.components.append(component)
 
+    def update(self):
+        self.parent.update()
+

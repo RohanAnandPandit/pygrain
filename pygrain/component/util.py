@@ -1,12 +1,14 @@
 import pygame
 
+FONT_PATH = 'pygrain/component/Vogue.ttf'
+
 
 def show_text(screen, text, centre_x, centre_y, font_colour=(0, 0, 0),
               font_bg=(255, 255, 255), font_size=10):
     # initialises font for displaying text
     try:
         for line in text.split('\n'):
-            basic_font = pygame.font.Font('component/Vogue.ttf', font_size)
+            basic_font = pygame.font.Font(FONT_PATH, font_size)
             text = basic_font.render(text, True, font_colour, font_bg)
             text_rect = text.get_rect()
             text_rect.center = (centre_x, centre_y)  #

@@ -19,19 +19,24 @@ class App:
         self.screen = pygame.display.set_mode((width, height))
         self.frame = frame
         self.frames = []
+        self.UPDATE = True
 
     def mainloop(self):
         self.update()
         while True:
             self.check_events()
 
+            if self.UPDATE:
+                self.UPDATE = False
+                self.screen.fill(WHITE)
+
+                if self.frame:
+                    self.frame.draw(self.screen)
+
+                pygame.display.update()
+
     def update(self):
-        self.screen.fill(WHITE)
-
-        if self.frame:
-            self.frame.draw(self.screen)
-
-        pygame.display.update()
+        self.UPDATE = True
 
     def add_component(self, frame):
         self.frames.append(frame)
@@ -53,6 +58,9 @@ class App:
                     self.frame.event("right click")
 
     def switch_frame(self, frame):
+        if frame not in self.frames:
+            self.frames.append(frame)
+
         self.frame = frame
         return self
 

@@ -7,12 +7,17 @@ class Frame(Component):
         self.components = []
 
     def event(self, name):
+        done = False
         for component in self.components:
-            component.event(name)
+            done = component.event(name)
+            if done:
+                return done
+
+        return done
 
     def draw(self, screen):
         super().draw(screen)
-        for component in self.components:
+        for component in self.components[::-1]:
             component.draw(screen)
 
     def add_component(self, component):

@@ -16,7 +16,7 @@ class Frame(Component):
             component.draw(screen)
 
     def add_component(self, component):
-        self.components.append(component)
+        self.components.insert(0, component)
 
     def update(self):
         self.parent.update()

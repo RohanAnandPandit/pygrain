@@ -2,8 +2,8 @@ from .Component import Component
 
 
 class Frame(Component):
-    def __init__(self, parent):
-        super().__init__(parent)
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
         self.components = []
 
     def event(self, name):
@@ -11,6 +11,7 @@ class Frame(Component):
             component.event(name)
 
     def draw(self, screen):
+        super().draw(screen)
         for component in self.components:
             component.draw(screen)
 

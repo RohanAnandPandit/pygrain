@@ -1,6 +1,6 @@
 import pygame
 
-FONT_PATH = 'pygrain/component/Vogue.ttf'
+FONT_PATH = 'src/component/Vogue.ttf'
 
 
 def show_text(screen, text, centre_x, centre_y, font_colour=(0, 0, 0),

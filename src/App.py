@@ -58,9 +58,6 @@ class App:
                     self.frame.event("right click")
 
     def switch_frame(self, frame):
-        if frame not in self.frames:
-            self.frames.append(frame)
-
         self.frame = frame
         return self
 

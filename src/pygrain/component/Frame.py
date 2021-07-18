@@ -5,6 +5,7 @@ class Frame(Component):
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
         self.components = []
+        parent.switch_frame(self)
 
     def event(self, name):
         done = False

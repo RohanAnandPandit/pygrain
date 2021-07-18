@@ -37,9 +37,10 @@ class Component:
     def event(self, name):
         if name in self.actions:
             if 'click' in name and not self.mouseover():
-                return
+                return False
 
-            return self.actions[name](self)
+            self.actions[name](self)
+            return True
 
     def get_x(self):
         return self.get_parent().get_x() + self.x

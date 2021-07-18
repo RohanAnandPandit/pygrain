@@ -16,12 +16,13 @@ WHITE = 255, 255, 255
 class App:
     def __init__(self, width=1000, height=800, frame=None):
         self.width, self.height = width, height
-        self.screen = pygame.display.set_mode((width, height))
+        self.screen = None
         self.frame = frame
         self.frames = []
         self.UPDATE = True
 
     def mainloop(self):
+        self.screen = pygame.display.set_mode((self.width, self.height))
         self.update()
         while True:
             self.check_events()

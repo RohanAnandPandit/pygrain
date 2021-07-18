@@ -64,3 +64,9 @@ class App:
     def set_title(self, title):
         pygame.display.set_caption(title)
         return self
+
+    def get_x(self):
+        return 0
+
+    def get_y(self):
+        return 0

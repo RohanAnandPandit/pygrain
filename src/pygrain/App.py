@@ -6,14 +6,19 @@ import threading
 
 pygame.init()
 
+# For graphics quality
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
+# Position of pygame window from top left of screen
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (5, 60)
 
 WHITE = 255, 255, 255
 
 
 class App:
+    """
+    Class to create and run new application.
+    """
     def __init__(self, width=1000, height=800, frame=None):
         self.width, self.height = width, height
         self.screen = None
@@ -23,6 +28,10 @@ class App:
         self.x, self.y = 0, 0
 
     def mainloop(self):
+        """
+        Initialise the display.
+        Check for events and update display when required.
+        """
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.update()
         while True:
@@ -38,13 +47,26 @@ class App:
                 pygame.display.update()
 
     def update(self):
+        """
+        Set UPDATE flag.
+        :return: self
+        """
         self.UPDATE = True
-
-    def add_component(self, frame):
-        self.frames.append(frame)
         return self
 
+    def add_component(self, frame):
+        """
+        Add frame to list of frames
+        :param frame: a new Frame object
+        :return: None
+        """
+        self.frames.append(frame)
+
     def check_events(self):
+        """
+        Check for keyboard and mouse events and pass them to the current frame.
+        :return: None
+        """
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -60,15 +82,30 @@ class App:
                     self.frame.event(frozenset({"right click"}))
 
     def switch_frame(self, frame):
+        """
+        Set the current frame
+        :param frame:
+        :return: self
+        """
         self.frame = frame
         return self
 
     def run(self, func):
+        """
+        Create new thread from for given function and start thread.
+        :param func:
+        :return: self
+        """
         window_thread = threading.Thread(target=func, args=tuple())
         window_thread.start()
         return self
 
     def set_title(self, title):
+        """
+        Set title for pygame window.
+        :param title: name of pygame window
+        :return:
+        """
         pygame.display.set_caption(title)
         return self
 

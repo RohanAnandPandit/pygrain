@@ -7,10 +7,10 @@ class Frame(Component):
         self.components = []
         parent.switch_frame(self)
 
-    def event(self, name):
+    def event(self, events):
         done = False
         for component in self.components:
-            done = component.event(name)
+            done = component.event(events)
             if done:
                 return done
 

@@ -9,15 +9,15 @@ class Button(Component):
         self.text = text
 
     def on_left_click(self, func):
-        self.set_action('left click', func)
+        self.bind({'left click'}, func)
         return self
 
     def on_right_click(self, func):
-        self.set_action('right click', func)
+        self.bind({'right click'}, func)
         return self
 
     def on_middle_click(self, func):
-        self.set_action('middle click', func)
+        self.bind({'middle click'}, func)
         return self
 
     def draw(self, screen):
@@ -31,3 +31,4 @@ class Button(Component):
 
     def get_text(self):
         return self.get_property('text')
+

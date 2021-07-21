@@ -34,12 +34,16 @@ class Component:
                          (x, y, self.width, self.height),
                          width=self.border_thickness)
 
-    def event(self, name):
-        if name in self.actions:
+    def valid_event(self, events):
+        for name in events:
             if 'click' in name and not self.mouseover():
                 return False
 
-            self.actions[name](self)
+        return True
+
+    def event(self, events):
+        if events in self.actions and self.valid_event(events):
+            self.actions[events](self)
             return True
 
     def get_x(self):
@@ -63,11 +67,11 @@ class Component:
         self.__setattr__(name, value)
         self.parent.update()
 
-    def get_action(self, name):
-        return self.actions[name]
+    def get_action(self, events):
+        return self.actions[events]
 
-    def set_action(self, name, func):
-        self.actions[name] = func
+    def bind(self, events, func):
+        self.actions[frozenset(events)] = func
 
     def mouseover(self):
         x, y = pygame.mouse.get_pos()

@@ -20,6 +20,7 @@ class App:
         self.frame = frame
         self.frames = []
         self.UPDATE = True
+        self.x, self.y = 0, 0
 
     def mainloop(self):
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -52,11 +53,11 @@ class App:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self.frame.event("left click")
+                    self.frame.event(frozenset({"left click"}))
                 elif event.button == 2:
-                    self.frame.event("middle click")
+                    self.frame.event(frozenset({"middle click"}))
                 elif event.button == 2:
-                    self.frame.event("right click")
+                    self.frame.event(frozenset({"right click"}))
 
     def switch_frame(self, frame):
         self.frame = frame
@@ -72,7 +73,7 @@ class App:
         return self
 
     def get_x(self):
-        return 0
+        return self.x
 
     def get_y(self):
-        return 0
+        return self.y

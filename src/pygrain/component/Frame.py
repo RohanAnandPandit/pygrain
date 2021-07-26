@@ -12,15 +12,13 @@ class Frame(Component):
 
     def event(self, events):
         """
-        Pass event to all sub-components in frame.
+        Pass event to all sub-components inside the frame.
         :param events:
         :return: if event was valid for any component
         """
         done = False
         for component in self.components:
-            done = component.event(events)
-            if done:
-                return done
+            done = component.event(events) or done
 
         return done
 

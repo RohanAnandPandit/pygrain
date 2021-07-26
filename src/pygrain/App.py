@@ -68,6 +68,7 @@ class App:
         :return: None
         """
         events = pygame.event.get()
+        current_event = set()
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -75,11 +76,24 @@ class App:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self.frame.event(frozenset({"left click"}))
+                    current_event.add("left click")
                 elif event.button == 2:
-                    self.frame.event(frozenset({"middle click"}))
+                    current_event.add("middle click")
                 elif event.button == 2:
-                    self.frame.event(frozenset({"right click"}))
+                    current_event.add("right click")
+
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    current_event.add("left up")
+                elif event.button == 2:
+                    current_event.add("middle up")
+                elif event.button == 2:
+                    current_event.add("right up")
+
+            elif event.type == pygame.MOUSEMOTION:
+                current_event.add("mousemotion")
+
+        self.frame.event(current_event)
 
     def switch_frame(self, frame):
         """

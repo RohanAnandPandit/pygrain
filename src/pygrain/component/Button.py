@@ -6,7 +6,7 @@ class Button(Component):
     """
     Component for button.
     """
-    def __init__(self, parent, x=0, y=0, text=lambda: '', **kwargs):
+    def __init__(self, parent, x=0, y=0, text='', **kwargs):
         super().__init__(parent, x=x, y=y, **kwargs)
         self.text = text
 

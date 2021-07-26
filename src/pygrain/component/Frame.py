@@ -16,6 +16,7 @@ class Frame(Component):
         :param events:
         :return: if event was valid for any component
         """
+        super().event(events)
         done = False
         for component in self.components:
             done = component.event(events) or done

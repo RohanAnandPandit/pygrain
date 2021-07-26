@@ -66,7 +66,9 @@ class Component:
         :return: None
         """
         if events in self.actions and self.valid_event(events):
-            self.actions[events](self)
+            for action in self.actions[events]:
+                action(self)
+
             return True
 
     def get_x(self):
@@ -125,11 +127,15 @@ class Component:
     def bind(self, events, func):
         """
         Add mapping for event combination in actions dict.
+        :param self:
         :param events: set of event names
         :param func: callback function when event occurs
         :return:
         """
-        self.actions[frozenset(events)] = func
+        if frozenset(events) not in self.actions:
+            self.actions[frozenset(events)] = []
+
+        self.actions[frozenset(events)].append(func)
 
     def mouseover(self):
         """

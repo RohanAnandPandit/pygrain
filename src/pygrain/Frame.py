@@ -16,12 +16,12 @@ class Frame(Component):
         :param events:
         :return: if event was valid for any component
         """
-        super().event(events)
-        done = False
-        for component in self.components:
-            done = component.event(events) or done
 
-        return done
+        for component in self.components[::-1]:
+            if component.event(events):
+                return True
+
+        return super().event(events)
 
     def draw(self, screen):
         """
@@ -30,7 +30,7 @@ class Frame(Component):
         :return: None
         """
         super().draw(screen)
-        for component in self.components[::-1]:
+        for component in self.components:
             component.draw(screen)
 
     def add_component(self, component):
@@ -39,7 +39,7 @@ class Frame(Component):
         :param component: Component
         :return: None
         """
-        self.components.insert(0, component)
+        self.components.append(component)
 
     def update(self):
         """

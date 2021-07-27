@@ -182,8 +182,8 @@ class Component:
         if not self.dragging:
             return
         x, y = pygame.mouse.get_pos()
-        self.x = x - self.get_parent().get_x() - self.drag_offset_x
-        self.y = y - self.get_parent().get_y() - self.drag_offset_y
+        self.set_property('x', x - self.get_parent().get_x() - self.drag_offset_x)
+        self.set_property('y', y - self.get_parent().get_y() - self.drag_offset_y)
         self.parent.update()
 
     def initialise_dragging(self):

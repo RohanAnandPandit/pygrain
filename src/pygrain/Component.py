@@ -9,7 +9,7 @@ class Component:
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
                  colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
-                 min_left=None, min_top=None, max_right=None, max_bottom=None):
+                 min_x=None, min_y=None, max_x=None, max_y=None):
         self.parent = parent
         self.parent.add_component(self)
         self.x = x
@@ -29,12 +29,13 @@ class Component:
         self.drag_offset_x, self.drag_offset_y = 0, 0
         self.fixed_x = fixed_x
         self.fixed_y = fixed_y
-        self.min_left = min_left
-        self.min_top = min_top
-        self.max_right = max_right
-        self.max_bottom = max_bottom
+        self.min_x = min_x
+        self.min_y = min_y
+        self.max_x = max_x
+        self.max_y = max_y
+
         if draggable:
-            self.initialise_dragging()
+            self.bind_drag_events()
 
     def get_parent(self):
         """
@@ -98,9 +99,9 @@ class Component:
     def set_x(self, x):
         if self.fixed_x:
             return
-        if self.min_left is not None and x < self.min_left:
+        if self.min_x is not None and x < self.min_x:
             return
-        if self.max_right is not None and x + self.width > self.max_right:
+        if self.max_x is not None and x + self.width > self.max_x:
             return
         self.x = x
 
@@ -114,9 +115,9 @@ class Component:
     def set_y(self, y):
         if self.fixed_y:
             return
-        if self.min_top is not None and y < self.min_top:
+        if self.min_y is not None and y < self.min_y:
             return
-        if self.max_bottom is not None and y > self.max_bottom:
+        if self.max_y is not None and y > self.max_y:
             return
 
         self.y = y
@@ -214,7 +215,7 @@ class Component:
 
         self.parent.update()
 
-    def initialise_dragging(self):
+    def bind_drag_events(self):
         """
         Binds actions for dragging component.
         :return:

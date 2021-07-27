@@ -83,9 +83,7 @@ class Component:
         for curr in self.actions:
             if curr.issubset(event) and self.valid_event(event):
                 for action in self.actions[curr]:
-                    action(self)
-
-                called = True
+                    called = action(self) or called
 
         return called
 
@@ -191,13 +189,23 @@ class Component:
         top left (or centre) of the component.
         :return:
         """
+
         self.dragging = True
         x, y = pygame.mouse.get_pos()
         self.drag_offset_x = x - self.get_x()
         self.drag_offset_y = y - self.get_y()
 
+        return True
+
     def reset_dragging(self):
+        """
+        Sets self.dragging to false.
+        Return true if self.dragging was true.
+        :return:
+        """
+        original = self.dragging
         self.dragging = False
+        return original
 
     def drag_position(self):
         """
@@ -206,14 +214,17 @@ class Component:
         the mouse from the component when the user clicked on the component.
         :return:
         """
+
         if not self.dragging:
-            return
+            return False
 
         x, y = pygame.mouse.get_pos()
         self.set_x(x - self.get_parent().get_x() - self.drag_offset_x)
         self.set_y(y - self.get_parent().get_y() - self.drag_offset_y)
 
         self.parent.update()
+
+        return True
 
     def bind_drag_events(self):
         """

@@ -8,7 +8,8 @@ class Component:
     def __init__(self, parent, x=0, y=0, font_color=(0, 0, 0),
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
-                 colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False):
+                 colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
+                 min_left=None, min_top=None, max_right=None, max_bottom=None):
         self.parent = parent
         self.parent.add_component(self)
         self.x = x
@@ -28,6 +29,10 @@ class Component:
         self.drag_offset_x, self.drag_offset_y = 0, 0
         self.fixed_x = fixed_x
         self.fixed_y = fixed_y
+        self.min_left = min_left
+        self.min_top = min_top
+        self.max_right = max_right
+        self.max_bottom = max_bottom
         if draggable:
             self.initialise_dragging()
 
@@ -93,7 +98,10 @@ class Component:
     def set_x(self, x):
         if self.fixed_x:
             return
-
+        if self.min_left is not None and x < self.min_left:
+            return
+        if self.max_right is not None and x + self.width > self.max_right:
+            return
         self.x = x
 
     def get_y(self):
@@ -105,6 +113,10 @@ class Component:
 
     def set_y(self, y):
         if self.fixed_y:
+            return
+        if self.min_top is not None and y < self.min_top:
+            return
+        if self.max_bottom is not None and y > self.max_bottom:
             return
 
         self.y = y

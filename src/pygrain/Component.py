@@ -8,7 +8,7 @@ class Component:
     def __init__(self, parent, x=0, y=0, font_color=(0, 0, 0),
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
-                 colour=(0, 0, 0), draggable=False):
+                 colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False):
         self.parent = parent
         self.parent.add_component(self)
         self.x = x
@@ -26,6 +26,8 @@ class Component:
         self.actions = {}
         self.dragging = False
         self.drag_offset_x, self.drag_offset_y = 0, 0
+        self.fixed_x = fixed_x
+        self.fixed_y = fixed_y
         if draggable:
             self.initialise_dragging()
 
@@ -88,12 +90,24 @@ class Component:
         """
         return self.get_parent().get_x() + self.x
 
+    def set_x(self, x):
+        if self.fixed_x:
+            return
+
+        self.x = x
+
     def get_y(self):
         """
         Calculate absolute y coordinate of component.
         :return: int/float
         """
         return self.get_parent().get_y() + self.y
+
+    def set_y(self, y):
+        if self.fixed_y:
+            return
+
+        self.y = y
 
     def set_width(self, width):
         """
@@ -181,9 +195,11 @@ class Component:
         """
         if not self.dragging:
             return
+
         x, y = pygame.mouse.get_pos()
-        self.set_property('x', x - self.get_parent().get_x() - self.drag_offset_x)
-        self.set_property('y', y - self.get_parent().get_y() - self.drag_offset_y)
+        self.set_x(x - self.get_parent().get_x() - self.drag_offset_x)
+        self.set_y(y - self.get_parent().get_y() - self.drag_offset_y)
+
         self.parent.update()
 
     def initialise_dragging(self):

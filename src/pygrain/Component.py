@@ -235,3 +235,9 @@ class Component:
         self.bind({'left up'}, lambda target: self.reset_dragging())
         self.bind({'mousemotion'}, lambda target: self.drag_position())
 
+    def update(self):
+        self.parent.update()
+
+    def switch_frame(self, frame):
+        self.parent.switch_frame(frame)
+

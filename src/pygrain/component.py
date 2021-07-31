@@ -167,6 +167,9 @@ class Component:
         :param func: callback function when event occurs
         :return:
         """
+        if not isinstance(events, set):
+            events = {events}
+
         if frozenset(events) not in self.actions:
             self.actions[frozenset(events)] = []
 
@@ -231,9 +234,9 @@ class Component:
         Binds actions for dragging component.
         :return:
         """
-        self.bind({'left click'}, lambda target: self.set_dragging())
-        self.bind({'left up'}, lambda target: self.reset_dragging())
-        self.bind({'mousemotion'}, lambda target: self.drag_position())
+        self.bind('left click', lambda target: self.set_dragging())
+        self.bind('left up', lambda target: self.reset_dragging())
+        self.bind('mousemotion', lambda target: self.drag_position())
 
     def update(self):
         self.parent.update()

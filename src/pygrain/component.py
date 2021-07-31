@@ -10,6 +10,27 @@ class Component:
                  border_thickness=1, font_size=20, width=1, height=1,
                  colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
                  min_x=None, min_y=None, max_x=None, max_y=None):
+        """
+
+        :param parent: parent component or app
+        :param x: relative from parent
+        :param y: relative from parent
+        :param font_color:
+        :param bg_colour:
+        :param border_color:
+        :param border_thickness:
+        :param font_size:
+        :param width:
+        :param height:
+        :param colour:
+        :param draggable:
+        :param fixed_x: x-coordinate can't be modified
+        :param fixed_y: y-coordinate can't be modified
+        :param min_x:
+        :param min_y:
+        :param max_x:
+        :param max_y:
+        """
         self.parent = parent
         self.parent.add_component(self)
         self.x = x

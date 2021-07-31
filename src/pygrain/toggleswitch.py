@@ -1,4 +1,4 @@
-from .Button import Button
+from .button import Button
 
 
 class ToggleSwitch(Button):

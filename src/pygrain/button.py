@@ -1,4 +1,4 @@
-from .Component import Component
+from .component import Component
 from .util import show_text
 
 

@@ -3,8 +3,9 @@ import sys
 import os
 import ctypes
 import threading
+import tkinter as tk
+import platform
 
-pygame.init()
 
 # For graphics quality
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
@@ -19,6 +20,7 @@ class App:
     """
     Class to create and run new application.
     """
+
     def __init__(self, width=1000, height=800, frame=None):
         self.width, self.height = width, height
         self.screen = None
@@ -26,17 +28,21 @@ class App:
         self.frames = []
         self.UPDATE = True
         self.x, self.y = 0, 0
+        self.windows = []
+        self.running = True
+
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.width, self.height))
 
     def mainloop(self):
         """
         Initialise the display.
         Check for events and update display when required.
         """
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        self.update()
-        while True:
+        while self.running:
             self.check_events()
-
+            if not self.running:
+                break
             if self.UPDATE:
                 self.UPDATE = False
                 self.screen.fill(WHITE)
@@ -45,6 +51,11 @@ class App:
                     self.frame.draw(self.screen)
 
                 pygame.display.update()
+                for window in self.windows:
+                    try:
+                        window.update()
+                    except tk.TclError:
+                        pass
 
     def update(self):
         """
@@ -71,8 +82,7 @@ class App:
         current_event = set()
         for event in events:
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                self.close()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -112,7 +122,11 @@ class App:
         """
         window_thread = threading.Thread(target=func, args=tuple())
         window_thread.start()
+
         return self
+
+    def add_tkinter_window(self, window):
+        self.windows.append(window)
 
     def set_title(self, title):
         """
@@ -128,3 +142,11 @@ class App:
 
     def get_y(self):
         return self.y
+
+    def is_running(self):
+        return self.running
+
+    def close(self):
+        self.running = False
+        pygame.quit()
+

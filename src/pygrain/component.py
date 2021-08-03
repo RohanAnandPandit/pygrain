@@ -114,15 +114,19 @@ class Component:
         Calculate absolute x coordinate of component.
         :return: int/float
         """
-        return self.x
+        return self.get_property('x')
 
     def set_x(self, x):
-        if self.fixed_x:
+        fixed_x = self.get_property('fixed_x')
+        min_x = self.get_property('min_x')
+        width = self.get_property('width')
+        max_x = self.get_property('max_x')
+        if fixed_x:
             return
-        if self.min_x is not None and x < self.min_x:
-            return
-        if self.max_x is not None and x + self.width > self.max_x:
-            return
+        if min_x is not None and x < min_x:
+            x = self.min_x
+        if max_x is not None and x + width > max_x:
+            x = max_x - width
         self.x = x
 
     def get_y(self):
@@ -130,15 +134,19 @@ class Component:
         Calculate absolute y coordinate of component.
         :return: int/float
         """
-        return self.y
+        return self.get_property('y')
 
     def set_y(self, y):
-        if self.fixed_y:
+        fixed_y = self.get_property('fixed_y')
+        min_y = self.get_property('min_y')
+        height = self.get_property('height')
+        max_y = self.get_property('max_y')
+        if fixed_y:
             return
-        if self.min_y is not None and y < self.min_y:
-            return
-        if self.max_y is not None and y > self.max_y:
-            return
+        if min_y is not None and y < min_y:
+            y = min_y
+        if max_y is not None and y + height > max_y:
+            y = max_y - height
 
         self.y = y
 

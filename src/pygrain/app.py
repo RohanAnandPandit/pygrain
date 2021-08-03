@@ -143,6 +143,12 @@ class App:
     def get_y(self):
         return self.y
 
+    def get_abs_x(self):
+        return self.x
+
+    def get_abs_y(self):
+        return self.y
+
     def is_running(self):
         return self.running
 

@@ -43,7 +43,7 @@ class Button(Component):
         :param screen:
         :return: None
         """
-        x, y = self.get_x(), self.get_y()
+        x, y = self.get_abs_x(), self.get_abs_y()
 
         super().draw(screen)
         # Button text

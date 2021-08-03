@@ -71,7 +71,7 @@ class Component:
         :param screen:
         :return: None
         """
-        x, y = self.get_x(), self.get_y()
+        x, y = self.get_abs_x(), self.get_abs_y()
         # Background rectangle
         pygame.draw.rect(screen, self.bg_colour,
                          (x, y, self.width, self.height))
@@ -87,8 +87,9 @@ class Component:
         :return: bool
         """
         for name in events:
-            if 'click' in name and not self.mouseover():
-                return False
+            if 'click' in name:
+                if not self.mouseover():
+                    return False
 
         return True
 
@@ -113,7 +114,7 @@ class Component:
         Calculate absolute x coordinate of component.
         :return: int/float
         """
-        return self.get_parent().get_x() + self.x
+        return self.x
 
     def set_x(self, x):
         if self.fixed_x:
@@ -129,7 +130,7 @@ class Component:
         Calculate absolute y coordinate of component.
         :return: int/float
         """
-        return self.get_parent().get_y() + self.y
+        return self.y
 
     def set_y(self, y):
         if self.fixed_y:
@@ -203,8 +204,8 @@ class Component:
         """
         x, y = pygame.mouse.get_pos()
         return (
-                self.get_x() <= x <= self.get_x() + self.width and
-                self.get_y() <= y <= self.get_y() + self.height
+                self.get_abs_x() <= x <= self.get_abs_x() + self.width and
+                self.get_abs_y() <= y <= self.get_abs_y() + self.height
         )
 
     def set_dragging(self):
@@ -216,8 +217,8 @@ class Component:
 
         self.dragging = True
         x, y = pygame.mouse.get_pos()
-        self.drag_offset_x = x - self.get_x()
-        self.drag_offset_y = y - self.get_y()
+        self.drag_offset_x = x - self.get_abs_x()
+        self.drag_offset_y = y - self.get_abs_y()
 
         return True
 
@@ -243,8 +244,8 @@ class Component:
             return False
 
         x, y = pygame.mouse.get_pos()
-        self.set_x(x - self.get_parent().get_x() - self.drag_offset_x)
-        self.set_y(y - self.get_parent().get_y() - self.drag_offset_y)
+        self.set_x(x - self.get_parent().get_abs_x() - self.drag_offset_x)
+        self.set_y(y - self.get_parent().get_abs_y() - self.drag_offset_y)
 
         self.parent.update()
 
@@ -264,4 +265,10 @@ class Component:
 
     def switch_frame(self, frame):
         self.parent.switch_frame(frame)
+
+    def get_abs_x(self):
+        return self.parent.get_abs_x() + self.get_x()
+
+    def get_abs_y(self):
+        return self.parent.get_abs_y() + self.get_y()
 

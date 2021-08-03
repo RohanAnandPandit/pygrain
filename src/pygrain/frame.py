@@ -1,3 +1,4 @@
+import pygame
 from .component import Component
 
 

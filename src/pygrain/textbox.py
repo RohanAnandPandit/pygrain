@@ -16,7 +16,7 @@ class TextBox(Component):
         :param screen:
         :return:
         """
-        x, y = self.get_x(), self.get_y()
+        x, y = self.get_abs_x(), self.get_abs_y()
         super().draw(screen)
         show_text(screen, self.get_text(), x + self.width / 2, y + self.height / 2,
                   font_size=self.font_size)

@@ -85,6 +85,7 @@ class App:
                 self.close()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+                current_event.add('click')
                 if event.button == 1:
                     current_event.add("left click")
                 elif event.button == 2:

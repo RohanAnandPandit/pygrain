@@ -5,15 +5,16 @@ from .box import Box
 class ScrollBar(Frame):
     def __init__(self, parent, scroll_height, **kwargs):
         super().__init__(parent,
-                         width=parent.width * 0.02,
-                         height=parent.height,
+                         x=lambda: parent.get_property('width') * 0.98,
+                         width=lambda: parent.get_property('width') * 0.02,
+                         height=lambda: parent.get_property('height'),
                          border_thickness=2,
                          fixed_x=True,
                          **kwargs)
         self.scroll_height = scroll_height
         self.box = Box(self, x=0, y=0,
-                       width=self.width,
-                       height=(self.height * parent.height / scroll_height),
+                       width=lambda: self.get_property('width'),
+                       height=lambda: self.get_property('height') * parent.get_property('height') / self.get_property('scroll_height'),
                        bg_colour=(100, 100, 100),
                        draggable=True,
                        fixed_x=True)

@@ -1,4 +1,5 @@
 import pygame
+from collections import defaultdict
 
 
 class Component:
@@ -51,9 +52,17 @@ class Component:
         self.fixed_x = fixed_x
         self.fixed_y = fixed_y
         self.min_x = min_x
+        if self.min_x is None:
+            self.min_x = 0
         self.min_y = min_y
+        if self.min_y is None:
+            self.min_y = 0
         self.max_x = max_x
+        if self.max_x is None:
+            self.max_x = lambda: self.parent.width
         self.max_y = max_y
+        if self.max_y is None:
+            self.max_y = lambda: self.parent.height
 
         if draggable:
             self.bind_drag_events()
@@ -80,33 +89,41 @@ class Component:
                          (x, y, self.width, self.height),
                          width=self.border_thickness)
 
-    def valid_event(self, events):
+    def valid_event(self, events, events_done):
         """
-        Return true if event is intended for this component.
-        :param events: set of event names
+        Return true if events is intended for this component.
+        :param events_done:
+        :param events: set of events names
         :return: bool
         """
-        for name in events:
-            if 'click' in name:
-                if not self.mouseover():
-                    return False
+        for event in events:
+            if events_done[event]:
+                return False
+        if 'click' in events:
+            if not self.mouseover():
+                return False
 
         return True
 
-    def event(self, event):
+    def event(self, events, events_done=None):
         """
         Call callback function for a given binding that is a subset of the
         current event.
-        :param event: set of event names
+        :param events_done:
+        :param events: set of event names
         :return: None
         """
-        event = frozenset(event)
+        if events_done is None:
+            events_done = defaultdict(bool)
+        events = frozenset(events)
         called = False
         for curr in self.actions:
-            if curr.issubset(event) and self.valid_event(event):
+            if curr.issubset(events) and self.valid_event(events, events_done):
                 for action in self.actions[curr]:
                     called = action(self) or called
-
+        if called:
+            for event in events:
+                events_done[event] = True
         return called
 
     def get_x(self):
@@ -183,18 +200,18 @@ class Component:
 
     def get_action(self, events):
         """
-        Return callback function associated with event combination.
-        :param events: set of event names
+        Return callback function associated with events combination.
+        :param events: set of events names
         :return:
         """
         return self.actions[events]
 
     def bind(self, events, func):
         """
-        Add mapping for event combination in actions dict.
+        Add mapping for events combination in actions dict.
         :param self:
-        :param events: set of event names
-        :param func: callback function when event occurs
+        :param events: set of events names
+        :param func: callback function when events occurs
         :return:
         """
         if not isinstance(events, set):
@@ -222,7 +239,9 @@ class Component:
         top left (or centre) of the component.
         :return:
         """
-
+        from .app import App
+        if isinstance(self.parent, App):
+            print('set_dragging')
         self.dragging = True
         x, y = pygame.mouse.get_pos()
         self.drag_offset_x = x - self.get_abs_x()

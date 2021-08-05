@@ -8,6 +8,7 @@ class ScrollBar(Frame):
                          width=parent.width * 0.02,
                          height=parent.height,
                          border_thickness=2,
+                         fixed_x=True,
                          **kwargs)
         self.scroll_height = scroll_height
         self.box = Box(self, x=0, y=0,
@@ -38,7 +39,7 @@ class ScrollBar(Frame):
             if component is self:
                 continue
             y = component.get_property('y')
-            component.set_property('y', y - dy)
+            component.set_y(y - dy)
 
         return True
 

@@ -1,4 +1,3 @@
-import pygame
 from .component import Component
 from collections import defaultdict
 
@@ -20,7 +19,7 @@ class Frame(Component):
         :return: if events was valid for any component
         """
         if events_done is None:
-            events_done = defaultdict(bool)
+            events_done = set()
         for component in self.components[::-1]:
             component.event(events, events_done=events_done)
 

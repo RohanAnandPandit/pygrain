@@ -97,7 +97,7 @@ class Component:
         :return: bool
         """
         for event in events:
-            if events_done[event]:
+            if event in events_done:
                 return False
         if 'click' in events:
             if not self.mouseover():
@@ -123,7 +123,7 @@ class Component:
                     called = action(self) or called
         if called:
             for event in events:
-                events_done[event] = True
+                events_done.add(event)
         return called
 
     def get_x(self):
@@ -239,9 +239,6 @@ class Component:
         top left (or centre) of the component.
         :return:
         """
-        from .app import App
-        if isinstance(self.parent, App):
-            print('set_dragging')
         self.dragging = True
         x, y = pygame.mouse.get_pos()
         self.drag_offset_x = x - self.get_abs_x()

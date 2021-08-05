@@ -1,4 +1,5 @@
 from .component import Component
+from collections import defaultdict
 
 
 class Frame(Component):
@@ -10,18 +11,19 @@ class Frame(Component):
         self.components = []
         parent.switch_frame(self)
 
-    def event(self, events):
+    def event(self, events, events_done=None):
         """
-        Pass event to all sub-components inside the frame.
+        Pass events to all sub-components inside the frame.
+        :param events_done:
         :param events:
-        :return: if event was valid for any component
+        :return: if events was valid for any component
         """
-
+        if events_done is None:
+            events_done = set()
         for component in self.components[::-1]:
-            if component.event(events):
-                return True
+            component.event(events, events_done=events_done)
 
-        return super().event(events)
+        return super().event(events, events_done=events_done)
 
     def draw(self, screen):
         """
@@ -40,6 +42,9 @@ class Frame(Component):
         :return: None
         """
         self.components.append(component)
+
+    def get_components(self):
+        return self.components
 
     def update(self):
         """

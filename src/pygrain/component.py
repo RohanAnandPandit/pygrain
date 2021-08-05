@@ -1,4 +1,5 @@
 import pygame
+from collections import defaultdict
 
 
 class Component:
@@ -51,9 +52,17 @@ class Component:
         self.fixed_x = fixed_x
         self.fixed_y = fixed_y
         self.min_x = min_x
+        if self.min_x is None:
+            self.min_x = 0
         self.min_y = min_y
+        if self.min_y is None:
+            self.min_y = 0
         self.max_x = max_x
+        if self.max_x is None:
+            self.max_x = lambda: self.parent.width
         self.max_y = max_y
+        if self.max_y is None:
+            self.max_y = lambda: self.parent.height
 
         if draggable:
             self.bind_drag_events()
@@ -71,41 +80,53 @@ class Component:
         :param screen:
         :return: None
         """
-        x, y = self.get_x(), self.get_y()
+        x, y = self.get_abs_x(), self.get_abs_y()
+        bg_colour = self.get_property('bg_colour')
+        width = self.get_property('width')
+        height = self.get_property('height')
         # Background rectangle
-        pygame.draw.rect(screen, self.bg_colour,
-                         (x, y, self.width, self.height))
+        pygame.draw.rect(screen, bg_colour,
+                         (x, y, width, height))
         # Border
         pygame.draw.rect(screen, self.border_colour,
-                         (x, y, self.width, self.height),
+                         (x, y, width, height),
                          width=self.border_thickness)
 
-    def valid_event(self, events):
+    def valid_event(self, events, events_done):
         """
-        Return true if event is intended for this component.
-        :param events: set of event names
+        Return true if events is intended for this component.
+        :param events_done:
+        :param events: set of events names
         :return: bool
         """
-        for name in events:
-            if 'click' in name and not self.mouseover():
+        for event in events:
+            if event in events_done:
+                return False
+        if 'click' in events:
+            if not self.mouseover():
                 return False
 
         return True
 
-    def event(self, event):
+    def event(self, events, events_done=None):
         """
         Call callback function for a given binding that is a subset of the
         current event.
-        :param event: set of event names
+        :param events_done:
+        :param events: set of event names
         :return: None
         """
-        event = frozenset(event)
+        if events_done is None:
+            events_done = defaultdict(bool)
+        events = frozenset(events)
         called = False
         for curr in self.actions:
-            if curr.issubset(event) and self.valid_event(event):
+            if curr.issubset(events) and self.valid_event(events, events_done):
                 for action in self.actions[curr]:
                     called = action(self) or called
-
+        if called:
+            for event in events:
+                events_done.add(event)
         return called
 
     def get_x(self):
@@ -113,15 +134,19 @@ class Component:
         Calculate absolute x coordinate of component.
         :return: int/float
         """
-        return self.get_parent().get_x() + self.x
+        return self.get_property('x')
 
     def set_x(self, x):
-        if self.fixed_x:
+        fixed_x = self.get_property('fixed_x')
+        min_x = self.get_property('min_x')
+        width = self.get_property('width')
+        max_x = self.get_property('max_x')
+        if fixed_x:
             return
-        if self.min_x is not None and x < self.min_x:
-            return
-        if self.max_x is not None and x + self.width > self.max_x:
-            return
+        if min_x is not None and x < min_x:
+            x = self.min_x
+        if max_x is not None and x + width > max_x:
+            x = max_x - width
         self.x = x
 
     def get_y(self):
@@ -129,15 +154,19 @@ class Component:
         Calculate absolute y coordinate of component.
         :return: int/float
         """
-        return self.get_parent().get_y() + self.y
+        return self.get_property('y')
 
     def set_y(self, y):
-        if self.fixed_y:
+        fixed_y = self.get_property('fixed_y')
+        min_y = self.get_property('min_y')
+        height = self.get_property('height')
+        max_y = self.get_property('max_y')
+        if fixed_y:
             return
-        if self.min_y is not None and y < self.min_y:
-            return
-        if self.max_y is not None and y > self.max_y:
-            return
+        if min_y is not None and y < min_y:
+            y = min_y
+        if max_y is not None and y + height > max_y:
+            y = max_y - height
 
         self.y = y
 
@@ -157,7 +186,7 @@ class Component:
         :return:
         """
         prop = self.__getattribute__(name)
-        if callable(prop):
+        while callable(prop):
             prop = prop()
 
         return prop
@@ -174,18 +203,18 @@ class Component:
 
     def get_action(self, events):
         """
-        Return callback function associated with event combination.
-        :param events: set of event names
+        Return callback function associated with events combination.
+        :param events: set of events names
         :return:
         """
         return self.actions[events]
 
     def bind(self, events, func):
         """
-        Add mapping for event combination in actions dict.
+        Add mapping for events combination in actions dict.
         :param self:
-        :param events: set of event names
-        :param func: callback function when event occurs
+        :param events: set of events names
+        :param func: callback function when events occurs
         :return:
         """
         if not isinstance(events, set):
@@ -202,9 +231,10 @@ class Component:
         :return:
         """
         x, y = pygame.mouse.get_pos()
+        width, height = self.get_property('width'), self.get_property('height')
         return (
-                self.get_x() <= x <= self.get_x() + self.width and
-                self.get_y() <= y <= self.get_y() + self.height
+                self.get_abs_x() <= x <= self.get_abs_x() + width and
+                self.get_abs_y() <= y <= self.get_abs_y() + height
         )
 
     def set_dragging(self):
@@ -213,11 +243,10 @@ class Component:
         top left (or centre) of the component.
         :return:
         """
-
         self.dragging = True
         x, y = pygame.mouse.get_pos()
-        self.drag_offset_x = x - self.get_x()
-        self.drag_offset_y = y - self.get_y()
+        self.drag_offset_x = x - self.get_abs_x()
+        self.drag_offset_y = y - self.get_abs_y()
 
         return True
 
@@ -243,8 +272,8 @@ class Component:
             return False
 
         x, y = pygame.mouse.get_pos()
-        self.set_x(x - self.get_parent().get_x() - self.drag_offset_x)
-        self.set_y(y - self.get_parent().get_y() - self.drag_offset_y)
+        self.set_x(x - self.get_parent().get_abs_x() - self.drag_offset_x)
+        self.set_y(y - self.get_parent().get_abs_y() - self.drag_offset_y)
 
         self.parent.update()
 
@@ -264,4 +293,10 @@ class Component:
 
     def switch_frame(self, frame):
         self.parent.switch_frame(frame)
+
+    def get_abs_x(self):
+        return self.parent.get_abs_x() + self.get_x()
+
+    def get_abs_y(self):
+        return self.parent.get_abs_y() + self.get_y()
 

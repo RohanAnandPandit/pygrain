@@ -40,14 +40,14 @@ class ValueSlider(Frame):
         super().draw(screen)
         # Draw line of slider
         pygame.draw.line(screen, (0, 0, 0),
-                         (self.get_x(), self.get_y() + self.height / 2),
-                         (self.get_x() + self.width, self.get_y() + self.height / 2),
+                         (self.get_abs_x(), self.get_abs_y() + self.height / 2),
+                         (self.get_abs_x() + self.width, self.get_abs_y() + self.height / 2),
                          2)
         # Draw point
         self.point.draw(screen)
         # Display current value of slider
         show_text(screen, str(round(self.get_value(), 2)),
-                  x=(self.get_x() + self.width / 2), y=self.get_y(), font_size=30)
+                  x=(self.get_abs_x() + self.width / 2), y=self.get_abs_y(), font_size=30)
         # Update screen
         self.update()
 

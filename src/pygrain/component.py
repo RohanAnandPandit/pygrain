@@ -81,12 +81,15 @@ class Component:
         :return: None
         """
         x, y = self.get_abs_x(), self.get_abs_y()
+        bg_colour = self.get_property('bg_colour')
+        width = self.get_property('width')
+        height = self.get_property('height')
         # Background rectangle
-        pygame.draw.rect(screen, self.bg_colour,
-                         (x, y, self.width, self.height))
+        pygame.draw.rect(screen, bg_colour,
+                         (x, y, width, height))
         # Border
         pygame.draw.rect(screen, self.border_colour,
-                         (x, y, self.width, self.height),
+                         (x, y, width, height),
                          width=self.border_thickness)
 
     def valid_event(self, events, events_done):
@@ -183,7 +186,7 @@ class Component:
         :return:
         """
         prop = self.__getattribute__(name)
-        if callable(prop):
+        while callable(prop):
             prop = prop()
 
         return prop
@@ -228,9 +231,10 @@ class Component:
         :return:
         """
         x, y = pygame.mouse.get_pos()
+        width, height = self.get_property('width'), self.get_property('height')
         return (
-                self.get_abs_x() <= x <= self.get_abs_x() + self.width and
-                self.get_abs_y() <= y <= self.get_abs_y() + self.height
+                self.get_abs_x() <= x <= self.get_abs_x() + width and
+                self.get_abs_y() <= y <= self.get_abs_y() + height
         )
 
     def set_dragging(self):

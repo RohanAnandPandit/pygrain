@@ -191,6 +191,9 @@ class Component:
 
         return prop
 
+    def get_properties(self, names):
+        return tuple(map(lambda name: self.get_property(name), names))
+    
     def set_property(self, name, value):
         """
         Set value of property given name and signal parent to update display.

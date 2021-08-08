@@ -1,5 +1,5 @@
 from .component import Component
-from .util import show_text
+from .util import show_text, get_text_size
 
 
 class TextBox(Component):
@@ -17,9 +17,13 @@ class TextBox(Component):
         :return:
         """
         x, y = self.get_abs_x(), self.get_abs_y()
+        text = self.get_text()
+        font_size = self.get_property('font_size')
+        width, height = get_text_size(self.get_text(), font_size=font_size)
+        self.set_property('width', width)
+        self.set_property('height', height)
         super().draw(screen)
-        show_text(screen, self.get_text(), x + self.width / 2, y + self.height / 2,
-                  font_size=self.font_size)
+        show_text(screen, text, x + width / 2, y + height / 2, font_size=font_size)
         return self
 
     def get_text(self):

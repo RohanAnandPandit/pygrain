@@ -6,8 +6,13 @@ class Point(Component):
     """
     Component to represent a point.
     """
-    def __init__(self, parent, radius=5, **kwargs):
-        super().__init__(parent, **kwargs)
+    def __init__(self, parent, radius=5, center_x=0, center_y=0, **kwargs):
+        self.center_x = center_x
+        self.center_y = center_y
+        center_x = self.get_property('center_x')
+        center_y = self.get_property('center_y')
+        x, y = center_x - radius, center_y - radius
+        super().__init__(parent, x=x, y=y, **kwargs)
         self.radius = radius
 
     def draw(self, screen):
@@ -20,6 +25,12 @@ class Point(Component):
                            color=self.get_property('colour'),
                            center=(self.get_abs_x(), self.get_abs_y()),
                            radius=self.get_property('radius'))
+
+    def get_abs_x(self):
+        return super().get_abs_x() + self.radius
+
+    def get_abs_y(self):
+        return super().get_abs_y() + self.radius
 
     def mouseover(self):
         """

@@ -52,6 +52,7 @@ class Component:
         self.fixed_x = fixed_x
         self.fixed_y = fixed_y
         self.min_x = min_x
+
         if self.min_x is None:
             self.min_x = 0
         self.min_y = min_y
@@ -66,6 +67,8 @@ class Component:
 
         if draggable:
             self.bind_drag_events()
+
+
 
     def get_parent(self):
         """

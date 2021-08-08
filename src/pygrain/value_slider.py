@@ -25,7 +25,7 @@ class ValueSlider(Frame):
         self.end = end
         self.step = step
         self.default = default
-        self.point = Point(self, y=(self.height / 2),
+        self.point = Point(self, center_y=(self.height / 2),
                            draggable=True, fixed_y=True, min_x=0, max_x=self.width,
                            radius=10)
         self.point.bind('left up', lambda target: self.set_position())

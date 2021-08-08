@@ -147,7 +147,7 @@ class Component:
             x = self.min_x
         if max_x is not None and x + width > max_x:
             x = max_x - width
-        self.x = x
+        self.set_property('x', x)
 
     def get_y(self):
         """
@@ -168,7 +168,7 @@ class Component:
         if max_y is not None and y + height > max_y:
             y = max_y - height
 
-        self.y = y
+        self.set_property('y', y)
 
     def set_width(self, width):
         """

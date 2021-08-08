@@ -1,8 +1,8 @@
-from .frame import Frame
+from .scroll_bar import ScrollBar
 from .box import Box
 
 
-class HorizontalScrollBar(Frame):
+class HorizontalScrollBar(ScrollBar):
     def __init__(self, parent, scroll_width, **kwargs):
         super().__init__(parent,
                          x=0,
@@ -19,21 +19,16 @@ class HorizontalScrollBar(Frame):
                        bg_colour=(100, 100, 100),
                        draggable=True,
                        fixed_y=True)
-        self.bind_scroll_events()
         self.previous_x = 0
-
-    def draw(self, screen):
-        super().draw(screen)
-        self.box.draw(screen)
+        super().bind_scroll_events()
 
     def scroll(self):
-        if not self.box.get_property('dragging'):
-            return False
-
         x = self.box.get_property('x')
+        previous_x = self.get_property('previous_x')
+        if x == previous_x:
+            return False
         width = self.get_property('width')
         scroll_width = self.get_property('scroll_width')
-        previous_x = self.get_property('previous_x')
         dx = (x - previous_x) * (scroll_width / width)
         self.set_previous_x(x)
 
@@ -48,6 +43,3 @@ class HorizontalScrollBar(Frame):
     def set_previous_x(self, x):
         self.previous_x = x
         return self
-
-    def bind_scroll_events(self):
-        self.box.bind('mousemotion', lambda target: self.scroll())

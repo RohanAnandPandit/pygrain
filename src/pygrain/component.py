@@ -10,7 +10,8 @@ class Component:
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
                  colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
-                 min_x=None, min_y=None, max_x=None, max_y=None):
+                 min_x=None, min_y=None, max_x=None, max_y=None, free=False,
+                 invisible=False):
         """
 
         :param parent: parent component or app
@@ -31,6 +32,8 @@ class Component:
         :param min_y:
         :param max_x:
         :param max_y:
+        :param free: A free component can be moved outside the parent component
+        :param invisible: An invisible component is not drawn
         """
         self.parent = parent
         self.parent.add_component(self)
@@ -52,6 +55,8 @@ class Component:
         self.fixed_x = fixed_x
         self.fixed_y = fixed_y
         self.min_x = min_x
+        self.free = free
+        self.invisible = invisible
 
         if self.min_x is None:
             self.min_x = 0
@@ -81,6 +86,8 @@ class Component:
         :param screen:
         :return: None
         """
+        if self.get_property('invisible'):
+            return
         x, y = self.get_abs_x(), self.get_abs_y()
         bg_colour = self.get_property('bg_colour')
         width = self.get_property('width')
@@ -136,6 +143,9 @@ class Component:
         :return: int/float
         """
         x = self.get_property('x')
+        free = self.get_property('free')
+        if free:
+            return x
         min_x = self.get_property('min_x')
         width = self.get_property('width')
         max_x = self.get_property('max_x')
@@ -143,10 +153,14 @@ class Component:
             x = self.min_x
         if max_x is not None and x + width > max_x:
             x = max_x - width
-        self.set_property('x', x)
         return x
 
     def set_x(self, x):
+        free = self.get_property('free')
+        if free:
+            self.set_property('x', x)
+            return
+
         fixed_x = self.get_property('fixed_x')
         min_x = self.get_property('min_x')
         width = self.get_property('width')
@@ -165,6 +179,9 @@ class Component:
         :return: int/float
         """
         y = self.get_property('y')
+        free = self.get_property('free')
+        if free:
+            return y
         min_y = self.get_property('min_y')
         height = self.get_property('height')
         max_y = self.get_property('max_y')
@@ -174,10 +191,14 @@ class Component:
         if max_y is not None and y + height > max_y:
             y = max_y - height
 
-        self.set_property('y', y)
         return y
 
     def set_y(self, y):
+        free = self.get_property('free')
+        if free:
+            self.set_property('y', y)
+            return
+
         fixed_y = self.get_property('fixed_y')
         min_y = self.get_property('min_y')
         height = self.get_property('height')
@@ -323,4 +344,7 @@ class Component:
 
     def get_abs_y(self):
         return self.parent.get_abs_y() + self.get_y()
+
+    def is_invisible(self):
+        return self.get_property('invisible')
 

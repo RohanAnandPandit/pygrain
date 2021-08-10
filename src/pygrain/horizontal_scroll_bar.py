@@ -27,13 +27,14 @@ class HorizontalScrollBar(ScrollBar):
         previous_x = self.get_property('previous_x')
         if x == previous_x:
             return False
+
         width = self.get_property('width')
         scroll_width = self.get_property('scroll_width')
         dx = (x - previous_x) * (scroll_width / width)
         self.set_previous_x(x)
 
         for component in self.parent.get_components():
-            if component is self and component.is_invisible():
+            if component is self or component.is_invisible():
                 continue
             x = component.get_property('x')
             component.set_x(x - dx)

@@ -33,7 +33,7 @@ class HorizontalScrollBar(ScrollBar):
         self.set_previous_x(x)
 
         for component in self.parent.get_components():
-            if component is self:
+            if component is self and component.is_invisible():
                 continue
             x = component.get_property('x')
             component.set_x(x - dx)

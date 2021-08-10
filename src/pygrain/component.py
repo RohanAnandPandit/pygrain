@@ -68,8 +68,6 @@ class Component:
         if draggable:
             self.bind_drag_events()
 
-
-
     def get_parent(self):
         """
         Return this component's parent component (or App)
@@ -137,7 +135,16 @@ class Component:
         Calculate absolute x coordinate of component.
         :return: int/float
         """
-        return self.get_property('x')
+        x = self.get_property('x')
+        min_x = self.get_property('min_x')
+        width = self.get_property('width')
+        max_x = self.get_property('max_x')
+        if min_x is not None and x < min_x:
+            x = self.min_x
+        if max_x is not None and x + width > max_x:
+            x = max_x - width
+        self.set_property('x', x)
+        return x
 
     def set_x(self, x):
         fixed_x = self.get_property('fixed_x')
@@ -157,7 +164,18 @@ class Component:
         Calculate absolute y coordinate of component.
         :return: int/float
         """
-        return self.get_property('y')
+        y = self.get_property('y')
+        min_y = self.get_property('min_y')
+        height = self.get_property('height')
+        max_y = self.get_property('max_y')
+
+        if min_y is not None and y < min_y:
+            y = min_y
+        if max_y is not None and y + height > max_y:
+            y = max_y - height
+
+        self.set_property('y', y)
+        return y
 
     def set_y(self, y):
         fixed_y = self.get_property('fixed_y')

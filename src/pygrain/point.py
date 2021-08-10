@@ -12,6 +12,8 @@ class Point(Component):
         center_x = self.get_property('center_x')
         center_y = self.get_property('center_y')
         x, y = center_x - radius, center_y - radius
+        self.center_x = lambda: self.get_x() + self.get_property('radius')
+        self.center_y = lambda: self.get_y() + self.get_property('radius')
         super().__init__(parent, x=x, y=y, **kwargs)
         self.radius = radius
 
@@ -21,6 +23,8 @@ class Point(Component):
         :param screen: pygame screen
         :return: None
         """
+        if self.get_property('invisible'):
+            return
         pygame.draw.circle(screen,
                            color=self.get_property('colour'),
                            center=(self.get_abs_x(), self.get_abs_y()),

@@ -1,4 +1,5 @@
 from .component import Component
+from .point import Point
 from collections import defaultdict
 
 
@@ -6,10 +7,18 @@ class Frame(Component):
     """
     Class for a collection of components.
     """
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, resizeable=False, **kwargs):
         super().__init__(parent, **kwargs)
         self.components = []
         parent.switch_frame(self)
+        width, height = self.get_properties(['width', 'height'])
+        self.resizeable = resizeable
+        if resizeable:
+            self.resize_point = Point(self, center_x=width, center_y=height,
+                                      draggable=True, free=True, radius=10,
+                                      invisible=True)
+            self.set_property('width', lambda: self.resize_point.get_property('center_x'))
+            self.set_property('height', lambda: self.resize_point.get_property('center_y'))
 
     def event(self, events, events_done=None):
         """

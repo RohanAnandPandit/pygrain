@@ -43,7 +43,7 @@ class VerticalScrollBar(ScrollBar):
         self.set_previous_y(y)
 
         for component in self.parent.get_components():
-            if component is self:
+            if component is self or component.is_invisible():
                 continue
             y = component.get_property('y')
             component.set_y(y - dy)

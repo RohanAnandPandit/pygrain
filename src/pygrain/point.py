@@ -6,6 +6,7 @@ class Point(Component):
     """
     Component to represent a point.
     """
+
     def __init__(self, parent, radius=5, center_x=0, center_y=0, **kwargs):
         self.center_x = center_x
         self.center_y = center_y
@@ -14,7 +15,10 @@ class Point(Component):
         x, y = center_x - radius, center_y - radius
         self.center_x = lambda: self.get_x() + self.get_property('radius')
         self.center_y = lambda: self.get_y() + self.get_property('radius')
-        super().__init__(parent, x=x, y=y, **kwargs)
+        super().__init__(parent, x=x, y=y,
+                         width=lambda: 2 * self.get_property('radius'),
+                         height=lambda: 2 * self.get_property('radius'),
+                         **kwargs)
         self.radius = radius
 
     def draw(self, screen):
@@ -43,4 +47,5 @@ class Point(Component):
         """
         x, y = self.get_abs_x(), self.get_abs_y()
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        return (((x - mouse_x) ** 2 + (y-mouse_y) ** 2) ** 0.5) < self.radius
+        radius = self.get_property('radius')
+        return (((x - mouse_x) ** 2 + (y - mouse_y) ** 2) ** 0.5) < radius

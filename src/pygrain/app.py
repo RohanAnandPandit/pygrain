@@ -80,6 +80,7 @@ class App:
         """
         events = pygame.event.get()
         current_event = set()
+        current_event.add('always')
         for event in events:
             if event.type == pygame.QUIT:
                 self.close()

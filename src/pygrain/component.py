@@ -10,8 +10,8 @@ class Component:
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
                  colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
-                 min_x=None, min_y=None, max_x=None, max_y=None, free=False,
-                 invisible=False):
+                 min_x=None, min_y=None, max_x=None, max_y=None, free_x=False,
+                 free_y=False, free=False, invisible=False):
         """
 
         :param parent: parent component or app
@@ -57,6 +57,8 @@ class Component:
         self.min_x = min_x
         self.free = free
         self.invisible = invisible
+        self.free_x = free_x
+        self.free_y = free_y
 
         if self.min_x is None:
             self.min_x = 0
@@ -143,9 +145,10 @@ class Component:
         :return: int/float
         """
         x = self.get_property('x')
-        free = self.get_property('free')
-        if free:
+        free_x = self.get_property('free_x')
+        if free_x:
             return x
+
         min_x = self.get_property('min_x')
         width = self.get_property('width')
         max_x = self.get_property('max_x')
@@ -156,8 +159,8 @@ class Component:
         return x
 
     def set_x(self, x):
-        free = self.get_property('free')
-        if free:
+        free_x = self.get_property('free_x')
+        if free_x:
             self.set_property('x', x)
             return
 
@@ -179,8 +182,8 @@ class Component:
         :return: int/float
         """
         y = self.get_property('y')
-        free = self.get_property('free')
-        if free:
+        free_y = self.get_property('free_y')
+        if free_y:
             return y
         min_y = self.get_property('min_y')
         height = self.get_property('height')
@@ -194,8 +197,8 @@ class Component:
         return y
 
     def set_y(self, y):
-        free = self.get_property('free')
-        if free:
+        free_y = self.get_property('free_y')
+        if free_y:
             self.set_property('y', y)
             return
 
@@ -235,6 +238,10 @@ class Component:
 
     def get_properties(self, names):
         return tuple(map(lambda name: self.get_property(name), names))
+
+    def set_properties(self, names, values):
+        for i in range(len(names)):
+            self.set_property(names[i], values[i])
     
     def set_property(self, name, value):
         """

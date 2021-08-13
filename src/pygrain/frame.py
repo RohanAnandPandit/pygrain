@@ -1,3 +1,4 @@
+from .box import Box
 from .component import Component
 from .point import Point
 from collections import defaultdict
@@ -7,18 +8,35 @@ class Frame(Component):
     """
     Class for a collection of components.
     """
+
     def __init__(self, parent, resizeable=False, **kwargs):
         super().__init__(parent, **kwargs)
         self.components = []
         parent.switch_frame(self)
+
         width, height = self.get_properties(['width', 'height'])
         self.resizeable = resizeable
+
         if resizeable:
             self.resize_point = Point(self, center_x=width, center_y=height,
-                                      draggable=True, free=True, radius=10,
-                                      invisible=True)
-            self.set_property('width', lambda: self.resize_point.get_property('center_x'))
-            self.set_property('height', lambda: self.resize_point.get_property('center_y'))
+                                      draggable=True, free_x=True, free_y=True,
+                                      radius=10)
+
+            self.bottom_bar = Box(self, x=0, y=self.height,
+                                  fixed_x=True,
+                                  width=lambda: self.get_property('width'),
+                                  height=20,
+                                  free_y=True,
+                                  draggable=True)
+
+            self.bind('always', lambda target: self.resize_frame())
+
+    def mouseover(self):
+        for component in self.components:
+            if component.mouseover():
+                return True
+
+        return super().mouseover()
 
     def event(self, events, events_done=None):
         """
@@ -62,3 +80,19 @@ class Frame(Component):
         """
         self.parent.update()
 
+    def resize_frame(self):
+        if self.resize_point.dragging:
+            x, y = self.resize_point.x, self.resize_point.y
+            self.width, self.height = x, y
+            self.bottom_bar.y = y
+            self.update()
+            return True
+
+        elif self.bottom_bar.dragging:
+            y = self.bottom_bar.y
+            self.height = y
+            self.resize_point.y = y
+            self.update()
+            return True
+
+        return False

@@ -26,6 +26,7 @@ class ValueSlider(Frame):
         self.step = step
         self.default = default
         height = self.get_property('height')
+
         self.point = Point(self, center_y=(height / 2),
                            draggable=True, fixed_y=True, min_x=0, max_x=self.width,
                            radius=10)

@@ -20,7 +20,7 @@ class Frame(Component):
         if resizeable:
             self.resize_point = Point(self, center_x=width, center_y=height,
                                       draggable=True, free_x=True, free_y=True,
-                                      radius=10)
+                                      radius=10, invisible=True)
 
             self.bottom_bar = Box(self, x=0, y=self.height,
                                   fixed_x=True,
@@ -82,16 +82,16 @@ class Frame(Component):
 
     def resize_frame(self):
         if self.resize_point.dragging:
-            x, y = self.resize_point.x, self.resize_point.y
-            self.width, self.height = x, y
-            self.bottom_bar.y = y
+            width, height = self.resize_point.get_center_x(), self.resize_point.get_center_y()
+            self.width, self.height = width, height
+            self.bottom_bar.y = height
             self.update()
             return True
 
         elif self.bottom_bar.dragging:
             y = self.bottom_bar.y
             self.height = y
-            self.resize_point.y = y
+            self.resize_point.set_center_y(y)
             self.update()
             return True
 

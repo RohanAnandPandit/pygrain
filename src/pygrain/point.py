@@ -29,23 +29,36 @@ class Point(Component):
         """
         if self.get_property('invisible'):
             return
+
+        radius = self.get_property('radius')
         pygame.draw.circle(screen,
                            color=self.get_property('colour'),
-                           center=(self.get_abs_x(), self.get_abs_y()),
-                           radius=self.get_property('radius'))
+                           center=(self.get_abs_x() + radius, self.get_abs_y() + radius),
+                           radius=radius)
 
-    def get_abs_x(self):
-        return super().get_abs_x() + self.radius
+    def set_center_x(self, center_x):
+        self.center_x = center_x
+        radius = self.get_property('radius')
+        self.x = self.center_x - radius
 
-    def get_abs_y(self):
-        return super().get_abs_y() + self.radius
+    def set_center_y(self, center_y):
+        self.center_y = center_y
+        radius = self.get_property('radius')
+        self.y = self.center_y - radius
+
+    def get_center_x(self):
+        return self.get_x() + self.get_property('radius')
+
+    def get_center_y(self):
+        return self.get_y() + self.get_property('radius')
 
     def mouseover(self):
         """
         Return if mouse is inside circle representing point.
         :return: bool
         """
-        x, y = self.get_abs_x(), self.get_abs_y()
+        radius = self.get_property('radius')
+        x, y = self.get_abs_x() + radius, self.get_abs_y() + radius
         mouse_x, mouse_y = pygame.mouse.get_pos()
         radius = self.get_property('radius')
         return (((x - mouse_x) ** 2 + (y - mouse_y) ** 2) ** 0.5) < radius

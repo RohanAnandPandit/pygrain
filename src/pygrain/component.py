@@ -11,7 +11,7 @@ class Component:
                  border_thickness=1, font_size=20, width=1, height=1,
                  colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
                  min_x=None, min_y=None, max_x=None, max_y=None, free_x=False,
-                 free_y=False, free=False, invisible=False):
+                 free_y=False, free=False, invisible=False, scrollable=True):
         """
 
         :param parent: parent component or app
@@ -59,6 +59,7 @@ class Component:
         self.invisible = invisible
         self.free_x = free_x
         self.free_y = free_y
+        self.scrollable = scrollable
 
         if self.min_x is None:
             self.min_x = 0
@@ -355,3 +356,5 @@ class Component:
     def is_invisible(self):
         return self.get_property('invisible')
 
+    def is_scrollable(self):
+        return self.get_property('scrollable')

@@ -11,11 +11,13 @@ class HorizontalScrollBar(ScrollBar):
                          width=lambda: parent.get_property('width'),
                          border_thickness=2,
                          fixed_y=True,
+                         scrollable=False,
                          **kwargs)
         self.scroll_width = scroll_width
         self.box = Box(self, x=0, y=0,
                        height=lambda: self.get_property('height'),
-                       width=lambda: self.get_property('width') * parent.get_property('width') / self.get_property('scroll_width'),
+                       width=lambda: self.get_property('width') * parent.get_property('width') / self.get_property(
+                           'scroll_width'),
                        bg_colour=(100, 100, 100),
                        draggable=True,
                        fixed_y=True)
@@ -34,7 +36,7 @@ class HorizontalScrollBar(ScrollBar):
         self.set_previous_x(x)
 
         for component in self.parent.get_components():
-            if component is self or component.is_invisible():
+            if not component.is_scrollable():
                 continue
             x = component.get_property('x')
             component.set_x(x - dx)

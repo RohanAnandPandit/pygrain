@@ -16,6 +16,7 @@ class VerticalScrollBar(ScrollBar):
                          height=lambda: parent.get_property('height'),
                          border_thickness=2,
                          fixed_x=True,
+                         scrollable=False,
                          **kwargs)
         self.scroll_height = scroll_height
         self.box = Box(self, x=0, y=0,
@@ -43,7 +44,7 @@ class VerticalScrollBar(ScrollBar):
         self.set_previous_y(y)
 
         for component in self.parent.get_components():
-            if component is self or component.is_invisible():
+            if not component.is_scrollable():
                 continue
             y = component.get_property('y')
             component.set_y(y - dy)

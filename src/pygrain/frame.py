@@ -20,14 +20,16 @@ class Frame(Component):
         if resizeable:
             self.resize_point = Point(self, center_x=width, center_y=height,
                                       draggable=True, free_x=True, free_y=True,
-                                      radius=10, invisible=True)
+                                      radius=10, invisible=True, scrollable=False)
 
             self.bottom_bar = Box(self, x=0, y=self.height,
                                   fixed_x=True,
                                   width=lambda: self.get_property('width'),
-                                  height=20,
+                                  height=10,
+                                  invisible=True,
                                   free_y=True,
-                                  draggable=True)
+                                  draggable=True,
+                                  scrollable=False)
 
             self.bind('always', lambda target: self.resize_frame())
 
@@ -47,6 +49,7 @@ class Frame(Component):
         """
         if events_done is None:
             events_done = set()
+
         for component in self.components[::-1]:
             component.event(events, events_done=events_done)
 

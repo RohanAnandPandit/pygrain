@@ -263,6 +263,8 @@ class Component:
         :return: None
         """
         self.width = width
+
+        self.resize_point.set_center_x(width)
         self.parent.update()
 
     def get_property(self, name):

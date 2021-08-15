@@ -47,6 +47,7 @@ class ValueSlider(Frame):
                          (self.get_abs_x() + width, self.get_abs_y() + height / 2),
                          2)
         # Draw point
+        self.point.set_center_y(height / 2)
         self.point.draw(screen)
         # Display current value of slider
         show_text(screen, str(round(self.get_value(), 2)),

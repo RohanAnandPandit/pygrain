@@ -14,8 +14,10 @@ class TextBox(Component):
         self.pad_right = pad_right
         self.pad_top = pad_top
         self.pad_bottom = pad_bottom
+
         if padding is not None:
-            self.pad_left = self.pad_right = self.pad_top = self.pad_bottom = padding
+            self.pad_left = self.pad_right = padding
+            self.pad_top = self.pad_bottom = padding
 
     def draw(self, screen):
         """

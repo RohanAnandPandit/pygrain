@@ -15,11 +15,11 @@ class Point(Component):
         x, y = center_x - radius, center_y - radius
         self.center_x = lambda: self.get_x() + self.get_property('radius')
         self.center_y = lambda: self.get_y() + self.get_property('radius')
+        self.radius = radius
         super().__init__(parent, x=x, y=y,
                          width=lambda: 2 * self.get_property('radius'),
                          height=lambda: 2 * self.get_property('radius'),
                          **kwargs)
-        self.radius = radius
 
     def draw(self, screen):
         """
@@ -44,7 +44,7 @@ class Point(Component):
     def set_center_y(self, center_y):
         self.center_y = center_y
         radius = self.get_property('radius')
-        self.y = self.center_y - radius
+        self.y = self.get_property('center_y') - radius
 
     def get_center_x(self):
         return self.get_x() + self.get_property('radius')

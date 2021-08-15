@@ -6,12 +6,14 @@ class Component:
     """
     Superclass for UI components.
     """
+
     def __init__(self, parent, x=0, y=0, font_color=(0, 0, 0),
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
                  colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
                  min_x=None, min_y=None, max_x=None, max_y=None, free_x=False,
-                 free_y=False, free=False, invisible=False, scrollable=True):
+                 free_y=False, free=False, invisible=False, scrollable=True,
+                 resizeable=False):
         """
 
         :param parent: parent component or app
@@ -35,6 +37,7 @@ class Component:
         :param free: A free component can be moved outside the parent component
         :param invisible: An invisible component is not drawn
         """
+        self.components = []
         self.parent = parent
         self.parent.add_component(self)
         self.x = x
@@ -76,6 +79,29 @@ class Component:
         if draggable:
             self.bind_drag_events()
 
+        self.resizeable = resizeable
+
+        from .point import Point
+        from .box import Box
+        if resizeable:
+            self.resize_point = Point(self,
+                                      center_x=lambda: self.get_property('width'),
+                                      center_y=lambda: self.get_property('height'),
+                                      draggable=True, free_x=True, free_y=True,
+                                      radius=10, invisible=True, scrollable=False)
+
+            self.bottom_bar = Box(self, x=0,
+                                  y=lambda: self.get_property('height'),
+                                  fixed_x=True,
+                                  width=lambda: self.get_property('width'),
+                                  height=10,
+                                  invisible=True,
+                                  free_y=True,
+                                  draggable=True,
+                                  scrollable=False)
+
+            self.bind('always', lambda target: self.resize())
+
     def get_parent(self):
         """
         Return this component's parent component (or App)
@@ -91,6 +117,7 @@ class Component:
         """
         if self.get_property('invisible'):
             return
+
         x, y = self.get_abs_x(), self.get_abs_y()
         bg_colour = self.get_property('bg_colour')
         width = self.get_property('width')
@@ -102,6 +129,9 @@ class Component:
         pygame.draw.rect(screen, self.border_colour,
                          (x, y, width, height),
                          width=self.border_thickness)
+
+        for component in self.components:
+            component.draw(screen)
 
     def valid_event(self, events, events_done):
         """
@@ -126,9 +156,18 @@ class Component:
         :param events_done:
         :param events: set of event names
         :return: None
+
+        Pass events to all sub-components inside the frame.
+        :param events_done:
+        :param events:
+        :return: if events was valid for any component
         """
         if events_done is None:
-            events_done = defaultdict(bool)
+            events_done = set()
+
+        for component in self.components[::-1]:
+            component.event(events, events_done=events_done)
+
         events = frozenset(events)
         called = False
         for curr in self.actions:
@@ -138,6 +177,7 @@ class Component:
         if called:
             for event in events:
                 events_done.add(event)
+
         return called
 
     def get_x(self):
@@ -243,7 +283,7 @@ class Component:
     def set_properties(self, names, values):
         for i in range(len(names)):
             self.set_property(names[i], values[i])
-    
+
     def set_property(self, name, value):
         """
         Set value of property given name and signal parent to update display.
@@ -283,6 +323,9 @@ class Component:
         Return true if mouse is inside component's region.
         :return:
         """
+        for component in self.components:
+            if component.mouseover():
+                return True
         x, y = pygame.mouse.get_pos()
         width, height = self.get_property('width'), self.get_property('height')
         return (
@@ -358,3 +401,27 @@ class Component:
 
     def is_scrollable(self):
         return self.get_property('scrollable')
+
+    def resize(self):
+        if self.resize_point.dragging:
+            width, height = self.resize_point.get_center_x(), \
+                            self.resize_point.get_center_y()
+            self.width, self.height = width, height
+            self.bottom_bar.y = height
+            self.update()
+            return True
+
+        elif self.bottom_bar.dragging:
+            y = self.bottom_bar.y
+            self.height = y
+            self.resize_point.set_center_y(y)
+            self.update()
+            return True
+
+        return False
+
+    def add_component(self, component):
+        self.components.append(component)
+
+    def get_components(self):
+        return self.components

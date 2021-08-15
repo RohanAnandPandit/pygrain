@@ -85,13 +85,13 @@ class Component:
         from .box import Box
         if resizeable:
             self.resize_point = Point(self,
-                                      center_x=lambda: self.get_property('width'),
-                                      center_y=lambda: self.get_property('height'),
+                                      center_x=self.get_property('width'),
+                                      center_y=self.get_property('height'),
                                       draggable=True, free_x=True, free_y=True,
                                       radius=10, invisible=True, scrollable=False)
 
             self.bottom_bar = Box(self, x=0,
-                                  y=lambda: self.get_property('height'),
+                                  y=self.get_property('height'),
                                   fixed_x=True,
                                   width=lambda: self.get_property('width'),
                                   height=10,

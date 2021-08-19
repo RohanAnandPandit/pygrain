@@ -80,6 +80,7 @@ class App:
         """
         events = pygame.event.get()
         current_event = set()
+        current_event.add('always')
         for event in events:
             if event.type == pygame.QUIT:
                 self.close()
@@ -90,15 +91,19 @@ class App:
                     current_event.add("left click")
                 elif event.button == 2:
                     current_event.add("middle click")
-                elif event.button == 2:
+                elif event.button == 3:
                     current_event.add("right click")
+                elif event.button == 4:
+                    current_event.add("scroll up")
+                elif event.button == 5:
+                    current_event.add("scroll down")
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     current_event.add("left up")
                 elif event.button == 2:
                     current_event.add("middle up")
-                elif event.button == 2:
+                elif event.button == 3:
                     current_event.add("right up")
 
             elif event.type == pygame.MOUSEMOTION:

@@ -6,11 +6,14 @@ class Component:
     """
     Superclass for UI components.
     """
+
     def __init__(self, parent, x=0, y=0, font_color=(0, 0, 0),
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
                  colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
-                 min_x=None, min_y=None, max_x=None, max_y=None):
+                 min_x=None, min_y=None, max_x=None, max_y=None, free_x=False,
+                 free_y=False, free=False, invisible=False, scrollable=True,
+                 resizeable=False):
         """
 
         :param parent: parent component or app
@@ -31,7 +34,10 @@ class Component:
         :param min_y:
         :param max_x:
         :param max_y:
+        :param free: A free component can be moved outside the parent component
+        :param invisible: An invisible component is not drawn
         """
+        self.components = []
         self.parent = parent
         self.parent.add_component(self)
         self.x = x
@@ -52,6 +58,12 @@ class Component:
         self.fixed_x = fixed_x
         self.fixed_y = fixed_y
         self.min_x = min_x
+        self.free = free
+        self.invisible = invisible
+        self.free_x = free_x
+        self.free_y = free_y
+        self.scrollable = scrollable
+
         if self.min_x is None:
             self.min_x = 0
         self.min_y = min_y
@@ -67,6 +79,29 @@ class Component:
         if draggable:
             self.bind_drag_events()
 
+        self.resizeable = resizeable
+
+        from .point import Point
+        from .box import Box
+        if resizeable:
+            self.resize_point = Point(self,
+                                      center_x=self.get_property('width'),
+                                      center_y=self.get_property('height'),
+                                      draggable=True, free_x=True, free_y=True,
+                                      radius=10, invisible=True, scrollable=False)
+
+            self.bottom_bar = Box(self, x=0,
+                                  y=self.get_property('height'),
+                                  fixed_x=True,
+                                  width=lambda: self.get_property('width'),
+                                  height=10,
+                                  invisible=True,
+                                  free_y=True,
+                                  draggable=True,
+                                  scrollable=False)
+
+            self.bind('always', lambda target: self.resize())
+
     def get_parent(self):
         """
         Return this component's parent component (or App)
@@ -80,6 +115,9 @@ class Component:
         :param screen:
         :return: None
         """
+        if self.get_property('invisible'):
+            return
+
         x, y = self.get_abs_x(), self.get_abs_y()
         bg_colour = self.get_property('bg_colour')
         width = self.get_property('width')
@@ -91,6 +129,9 @@ class Component:
         pygame.draw.rect(screen, self.border_colour,
                          (x, y, width, height),
                          width=self.border_thickness)
+
+        for component in self.components:
+            component.draw(screen)
 
     def valid_event(self, events, events_done):
         """
@@ -115,9 +156,18 @@ class Component:
         :param events_done:
         :param events: set of event names
         :return: None
+
+        Pass events to all sub-components inside the frame.
+        :param events_done:
+        :param events:
+        :return: if events was valid for any component
         """
         if events_done is None:
-            events_done = defaultdict(bool)
+            events_done = set()
+
+        for component in self.components[::-1]:
+            component.event(events, events_done=events_done)
+
         events = frozenset(events)
         called = False
         for curr in self.actions:
@@ -127,6 +177,7 @@ class Component:
         if called:
             for event in events:
                 events_done.add(event)
+
         return called
 
     def get_x(self):
@@ -134,9 +185,26 @@ class Component:
         Calculate absolute x coordinate of component.
         :return: int/float
         """
-        return self.get_property('x')
+        x = self.get_property('x')
+        free_x = self.get_property('free_x')
+        if free_x:
+            return x
+
+        min_x = self.get_property('min_x')
+        width = self.get_property('width')
+        max_x = self.get_property('max_x')
+        if min_x is not None and x < min_x:
+            x = self.min_x
+        if max_x is not None and x + width > max_x:
+            x = max_x - width
+        return x
 
     def set_x(self, x):
+        free_x = self.get_property('free_x')
+        if free_x:
+            self.set_property('x', x)
+            return
+
         fixed_x = self.get_property('fixed_x')
         min_x = self.get_property('min_x')
         width = self.get_property('width')
@@ -147,16 +215,34 @@ class Component:
             x = self.min_x
         if max_x is not None and x + width > max_x:
             x = max_x - width
-        self.x = x
+        self.set_property('x', x)
 
     def get_y(self):
         """
         Calculate absolute y coordinate of component.
         :return: int/float
         """
-        return self.get_property('y')
+        y = self.get_property('y')
+        free_y = self.get_property('free_y')
+        if free_y:
+            return y
+        min_y = self.get_property('min_y')
+        height = self.get_property('height')
+        max_y = self.get_property('max_y')
+
+        if min_y is not None and y < min_y:
+            y = min_y
+        if max_y is not None and y + height > max_y:
+            y = max_y - height
+
+        return y
 
     def set_y(self, y):
+        free_y = self.get_property('free_y')
+        if free_y:
+            self.set_property('y', y)
+            return
+
         fixed_y = self.get_property('fixed_y')
         min_y = self.get_property('min_y')
         height = self.get_property('height')
@@ -168,7 +254,7 @@ class Component:
         if max_y is not None and y + height > max_y:
             y = max_y - height
 
-        self.y = y
+        self.set_property('y', y)
 
     def set_width(self, width):
         """
@@ -177,6 +263,8 @@ class Component:
         :return: None
         """
         self.width = width
+
+        self.resize_point.set_center_x(width)
         self.parent.update()
 
     def get_property(self, name):
@@ -190,6 +278,13 @@ class Component:
             prop = prop()
 
         return prop
+
+    def get_properties(self, names):
+        return tuple(map(lambda name: self.get_property(name), names))
+
+    def set_properties(self, names, values):
+        for i in range(len(names)):
+            self.set_property(names[i], values[i])
 
     def set_property(self, name, value):
         """
@@ -230,6 +325,9 @@ class Component:
         Return true if mouse is inside component's region.
         :return:
         """
+        for component in self.components:
+            if component.mouseover():
+                return True
         x, y = pygame.mouse.get_pos()
         width, height = self.get_property('width'), self.get_property('height')
         return (
@@ -300,3 +398,32 @@ class Component:
     def get_abs_y(self):
         return self.parent.get_abs_y() + self.get_y()
 
+    def is_invisible(self):
+        return self.get_property('invisible')
+
+    def is_scrollable(self):
+        return self.get_property('scrollable')
+
+    def resize(self):
+        if self.resize_point.dragging:
+            width, height = self.resize_point.get_center_x(), \
+                            self.resize_point.get_center_y()
+            self.width, self.height = width, height
+            self.bottom_bar.y = height
+            self.update()
+            return True
+
+        elif self.bottom_bar.dragging:
+            y = self.bottom_bar.y
+            self.height = y
+            self.resize_point.set_center_y(y)
+            self.update()
+            return True
+
+        return False
+
+    def add_component(self, component):
+        self.components.append(component)
+
+    def get_components(self):
+        return self.components

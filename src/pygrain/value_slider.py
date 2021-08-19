@@ -25,7 +25,9 @@ class ValueSlider(Frame):
         self.end = end
         self.step = step
         self.default = default
-        self.point = Point(self, y=(self.height / 2),
+        height = self.get_property('height')
+
+        self.point = Point(self, center_y=(height / 2),
                            draggable=True, fixed_y=True, min_x=0, max_x=self.width,
                            radius=10)
         self.point.bind('left up', lambda target: self.set_position())
@@ -39,15 +41,17 @@ class ValueSlider(Frame):
     def draw(self, screen):
         super().draw(screen)
         # Draw line of slider
+        width, height = self.get_properties(['width', 'height'])
         pygame.draw.line(screen, (0, 0, 0),
-                         (self.get_abs_x(), self.get_abs_y() + self.height / 2),
-                         (self.get_abs_x() + self.width, self.get_abs_y() + self.height / 2),
+                         (self.get_abs_x(), self.get_abs_y() + height / 2),
+                         (self.get_abs_x() + width, self.get_abs_y() + height / 2),
                          2)
         # Draw point
+        self.point.set_center_y(height / 2)
         self.point.draw(screen)
         # Display current value of slider
         show_text(screen, str(round(self.get_value(), 2)),
-                  x=(self.get_abs_x() + self.width / 2), y=self.get_abs_y(), font_size=30)
+                  x=(self.get_abs_x() + width / 2), y=self.get_abs_y(), font_size=30)
         # Update screen
         self.update()
 
@@ -64,7 +68,8 @@ class ValueSlider(Frame):
         diff = value - self.start
         value_range = self.end - self.start
         # Set x-coordinate of slider point
-        self.point.set_property('x', self.width * (diff / value_range))
+        width = self.get_property('width')
+        self.point.set_property('x', width * (diff / value_range))
 
     def get_value(self):
         """
@@ -72,14 +77,18 @@ class ValueSlider(Frame):
         :return:
         """
         # Amount to increment from start
-        offset = (self.end - self.start) * (self.point.x / self.width)
+        width = self.get_property('width')
+        x = self.point.get_property('x')
+        start, end, step = self.get_properties(['start', 'end', 'step'])
+        offset = (end - start) * (x / width)
 
-        if self.step is not None:
+        if step is not None:
             # Adjust offset to nearest step multiple
-            quot = round(offset / self.step)
-            offset = quot * self.step
+            quot = round(offset / step)
+            offset = quot * step
 
         # Current value
-        value = self.start + offset
+        start = self.get_property('start')
+        value = start + offset
 
         return value

@@ -109,7 +109,8 @@ class App:
             elif event.type == pygame.MOUSEMOTION:
                 current_event.add("mousemotion")
 
-        self.frame.event(current_event)
+        if self.frame:
+            self.frame.event(current_event)
 
     def switch_frame(self, frame):
         """

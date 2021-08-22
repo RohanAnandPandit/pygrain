@@ -279,7 +279,7 @@ class Component:
 
         return prop
 
-    def get_properties(self, names):
+    def get_properties(self, *names):
         return tuple(map(lambda name: self.get_property(name), names))
 
     def set_properties(self, names, values):

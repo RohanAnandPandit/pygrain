@@ -29,9 +29,9 @@ class TextBox(Component):
         x, y = self.get_abs_x(), self.get_abs_y()
         font_size = self.get_property('font_size')
         min_width, min_height = get_text_size(self.get_text(), font_size=font_size)
-        width, height = self.get_properties(['width', 'height'])
-        pad_left, pad_right = self.get_properties(['pad_left', 'pad_right'])
-        pad_top, pad_bottom = self.get_properties(['pad_top', 'pad_bottom'])
+        width, height = self.get_properties('width', 'height')
+        pad_left, pad_right = self.get_properties('pad_left', 'pad_right')
+        pad_top, pad_bottom = self.get_properties('pad_top', 'pad_bottom')
         text = self.get_text()
 
         super().draw(screen)

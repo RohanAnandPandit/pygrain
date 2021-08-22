@@ -41,7 +41,7 @@ class ValueSlider(Frame):
     def draw(self, screen):
         super().draw(screen)
         # Draw line of slider
-        width, height = self.get_properties(['width', 'height'])
+        width, height = self.get_properties('width', 'height')
         pygame.draw.line(screen, (0, 0, 0),
                          (self.get_abs_x(), self.get_abs_y() + height / 2),
                          (self.get_abs_x() + width, self.get_abs_y() + height / 2),
@@ -79,7 +79,7 @@ class ValueSlider(Frame):
         # Amount to increment from start
         width = self.get_property('width')
         x = self.point.get_property('x')
-        start, end, step = self.get_properties(['start', 'end', 'step'])
+        start, end, step = self.get_properties('start', 'end', 'step')
         offset = (end - start) * (x / width)
 
         if step is not None:

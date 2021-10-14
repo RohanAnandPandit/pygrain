@@ -109,6 +109,35 @@ class App:
             elif event.type == pygame.MOUSEMOTION:
                 current_event.add("mousemotion")
 
+            elif event.type == pygame.KEYDOWN:
+                key = ''
+                if event.key == pygame.K_SPACE:
+                    key = 'space'
+                elif event.key == pygame.K_RETURN:
+                    key = 'return'
+
+                if key:
+                    current_event.add("keydown " + key)
+                    continue
+
+                if event.key < 128:
+                    current_event.add("keydown " + chr(event.key))
+
+            elif event.type == pygame.KEYUP:
+                key = ''
+                if event.key == pygame.K_SPACE:
+                    key = 'space'
+                elif event.key == pygame.K_RETURN:
+                    key = 'return'
+
+                if key:
+                    current_event.add("keyup " + key)
+                    continue
+
+                if event.key < 128:
+                    current_event.add("keyup " + chr(event.key))
+
+
         if self.frame:
             self.frame.event(current_event)
 

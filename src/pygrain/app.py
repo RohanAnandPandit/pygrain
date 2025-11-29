@@ -6,7 +6,6 @@ import threading
 import tkinter as tk
 import platform
 
-
 # For graphics quality
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
@@ -162,4 +161,3 @@ class App:
     def close(self):
         self.running = False
         pygame.quit()
-

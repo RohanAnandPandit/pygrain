@@ -5,6 +5,7 @@ class ToggleSwitch(Button):
     """
     Button to switch between given values.
     """
+
     def __init__(self, parent, values=[], **kwargs):
         super().__init__(parent, text=values[0], **kwargs)
         self.values = values

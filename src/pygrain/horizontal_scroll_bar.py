@@ -16,7 +16,9 @@ class HorizontalScrollBar(ScrollBar):
         self.scroll_width = scroll_width
         self.box = Box(self, x=0, y=0,
                        height=lambda: self.get_property('height'),
-                       width=lambda: self.get_property('width') * parent.get_property('width') / self.get_property(
+                       width=lambda: self.get_property(
+                           'width') * parent.get_property(
+                           'width') / self.get_property(
                            'scroll_width'),
                        bg_colour=(100, 100, 100),
                        draggable=True,

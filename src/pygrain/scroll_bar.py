@@ -2,8 +2,10 @@ from .frame import Frame
 
 
 class ScrollBar(Frame):
+
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
+        self.box = None
 
     def draw(self, screen):
         """

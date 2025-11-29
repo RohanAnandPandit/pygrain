@@ -1,5 +1,5 @@
 from .component import Component
-from .util import show_image
+# from .util import show_image
 import pygame
 
 

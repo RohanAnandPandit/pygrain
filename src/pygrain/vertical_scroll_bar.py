@@ -21,7 +21,9 @@ class VerticalScrollBar(ScrollBar):
         self.scroll_height = scroll_height
         self.box = Box(self, x=0, y=0,
                        width=lambda: self.get_property('width'),
-                       height=lambda: self.get_property('height') * parent.get_property('height') / self.get_property('scroll_height'),
+                       height=lambda: self.get_property(
+                           'height') * parent.get_property(
+                           'height') / self.get_property('scroll_height'),
                        bg_colour=(100, 100, 100),
                        draggable=True,
                        fixed_x=True)

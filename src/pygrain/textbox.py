@@ -6,6 +6,7 @@ class TextBox(Component):
     """
     Component to display text.
     """
+
     def __init__(self, parent, text='', padding=None, pad_left=0, pad_right=0,
                  pad_top=0, pad_bottom=0, font_size=20, **kwargs):
         self.text = text
@@ -28,7 +29,8 @@ class TextBox(Component):
 
         x, y = self.get_abs_x(), self.get_abs_y()
         font_size = self.get_property('font_size')
-        min_width, min_height = get_text_size(self.get_text(), font_size=font_size)
+        min_width, min_height = get_text_size(self.get_text(),
+                                              font_size=font_size)
         width, height = self.get_properties('width', 'height')
         pad_left, pad_right = self.get_properties('pad_left', 'pad_right')
         pad_top, pad_bottom = self.get_properties('pad_top', 'pad_bottom')
@@ -47,6 +49,3 @@ class TextBox(Component):
         :return:
         """
         return self.get_property('text')
-
-
-

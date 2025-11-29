@@ -8,6 +8,7 @@ class ValueSlider(Frame):
     """
     Slider component to select values in a range.
     """
+
     def __init__(self, parent, start=0, end=10, step=None, default=None,
                  **kwargs):
         """
@@ -28,7 +29,8 @@ class ValueSlider(Frame):
         height = self.get_property('height')
 
         self.point = Point(self, center_y=(height / 2),
-                           draggable=True, fixed_y=True, min_x=0, max_x=self.width,
+                           draggable=True, fixed_y=True, min_x=0,
+                           max_x=self.width,
                            radius=10)
         self.point.bind('left up', lambda target: self.set_position())
 
@@ -44,14 +46,16 @@ class ValueSlider(Frame):
         width, height = self.get_properties('width', 'height')
         pygame.draw.line(screen, (0, 0, 0),
                          (self.get_abs_x(), self.get_abs_y() + height / 2),
-                         (self.get_abs_x() + width, self.get_abs_y() + height / 2),
+                         (self.get_abs_x() + width,
+                          self.get_abs_y() + height / 2),
                          2)
         # Draw point
         self.point.set_center_y(height / 2)
         self.point.draw(screen)
         # Display current value of slider
         show_text(screen, str(round(self.get_value(), 2)),
-                  x=(self.get_abs_x() + width / 2), y=self.get_abs_y(), font_size=30)
+                  x=(self.get_abs_x() + width / 2), y=self.get_abs_y(),
+                  font_size=30)
         # Update screen
         self.update()
 

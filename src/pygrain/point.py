@@ -33,7 +33,8 @@ class Point(Component):
         radius = self.get_property('radius')
         pygame.draw.circle(screen,
                            color=self.get_property('colour'),
-                           center=(self.get_abs_x() + radius, self.get_abs_y() + radius),
+                           center=(self.get_abs_x() + radius,
+                                   self.get_abs_y() + radius),
                            radius=radius)
 
     def set_center_x(self, center_x):

@@ -10,7 +10,8 @@ class Component:
     def __init__(self, parent, x=0, y=0, font_color=(0, 0, 0),
                  bg_colour=(255, 255, 255), border_color=(0, 0, 0),
                  border_thickness=1, font_size=20, width=1, height=1,
-                 colour=(0, 0, 0), draggable=False, fixed_x=False, fixed_y=False,
+                 colour=(0, 0, 0), draggable=False, fixed_x=False,
+                 fixed_y=False,
                  min_x=None, min_y=None, max_x=None, max_y=None, free_x=False,
                  free_y=False, free=False, invisible=False, scrollable=True,
                  resizeable=False):
@@ -88,7 +89,8 @@ class Component:
                                       center_x=self.get_property('width'),
                                       center_y=self.get_property('height'),
                                       draggable=True, free_x=True, free_y=True,
-                                      radius=10, invisible=True, scrollable=False)
+                                      radius=10, invisible=True,
+                                      scrollable=False)
 
             self.bottom_bar = Box(self, x=0,
                                   y=self.get_property('height'),
@@ -157,7 +159,7 @@ class Component:
         :param events: set of event names
         :return: None
 
-        Pass events to all sub-components inside the frame.
+        Pass events to all subcomponents inside the frame.
         :param events_done:
         :param events:
         :return: if events was valid for any component
@@ -407,7 +409,7 @@ class Component:
     def resize(self):
         if self.resize_point.dragging:
             width, height = self.resize_point.get_center_x(), \
-                            self.resize_point.get_center_y()
+                self.resize_point.get_center_y()
             self.width, self.height = width, height
             self.bottom_bar.y = height
             self.update()

@@ -32,6 +32,7 @@ def get_text_size(text, font_colour=(0, 0, 0), font_bg=(255, 255, 255),
     finally:
         pass
 
+
 def show_image(screen, path, x, y):
     image = pygame.image.load(path).convert()
     screen.blit(image, (x, y))
